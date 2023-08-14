@@ -1,9 +1,11 @@
 const express = require("express");
-const { getTopics } = require("./controllers/controllers");
+const { getTopics, getArticles } = require("./controllers/controllers");
 
 const app = express();
 
 app.get("/api/topics", getTopics);
+
+app.get('/api/articles/:article_id', getArticles)
 
 module.exports = app;
 

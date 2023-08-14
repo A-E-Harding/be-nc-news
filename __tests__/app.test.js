@@ -24,3 +24,9 @@ describe('/api/topics', () => {
             })
     })
 })
+
+describe('/api/articles/:article_id', () => {
+    test('200: responds with correct article', () => {
+        
+    })
+})

@@ -5,3 +5,7 @@ exports.readTopics = () => {
         return rows
     })
 }
+
+exports.getArticles = () => {
+    return db.query('SELECT * FROM articles ')
+}
