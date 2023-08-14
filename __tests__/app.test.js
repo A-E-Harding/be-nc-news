@@ -16,6 +16,7 @@ describe('/api/topics', () => {
     test('200: array of topic objects returned with slug and description properties', () => {
         return request(app).get('/api/topics')
             .expect(200).then((response) => {
+                expect(response.body.length).toBe(3)
                 for (const obj of response.body) {
                     expect(Object.keys(obj)).toEqual(['slug', 'description'])
                 }
