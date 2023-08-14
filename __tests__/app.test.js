@@ -3,6 +3,8 @@ const request = require('supertest')
 const testData = require('../db/data/test-data/index')
 const seed = require('../db/seeds/seed')
 const connection = require('../db/connection')
+const endpoints = require('../endpoints.json')
+
 
 beforeEach(() => {
     return seed(testData)
@@ -28,7 +30,7 @@ describe('/api/topics', () => {
             return request(app).get('/api')
                 .expect(200)
                 .then((response) => {
-                expect(Object.keys(response.body)).toEqual([ 'GET /api', 'GET /api/topics', 'GET /api/articles' ])
+                    expect(response.body).toEqual({endpoints})
             })
         })
     })
