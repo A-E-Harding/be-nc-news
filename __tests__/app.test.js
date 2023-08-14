@@ -23,4 +23,13 @@ describe('/api/topics', () => {
                 
             })
     })
+    describe('/api', () => {
+        test('200: returns all available endpoints and descriptions', () => {
+            return request(app).get('/api')
+                .expect(200)
+                .then((response) => {
+                expect(Object.keys(response.body)).toEqual([ 'GET /api', 'GET /api/topics', 'GET /api/articles' ])
+            })
+        })
+    })
 })
