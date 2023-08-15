@@ -4,6 +4,7 @@ const testData = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
 const connection = require("../db/connection");
 const endpoints = require("../endpoints.json");
+const articles = require("../db/data/test-data/articles.js");
 
 beforeEach(() => {
   return seed(testData);
@@ -13,7 +14,7 @@ afterAll(() => {
   return connection.end();
 });
 
-describe("/api/topics", () => {
+describe("GET /api/topics", () => {
   test("200: array of topic objects returned with slug and description properties", () => {
     return request(app)
       .get("/api/topics")
@@ -25,19 +26,20 @@ describe("/api/topics", () => {
         }
       });
   });
-  describe("/api", () => {
-    test("200: returns all available endpoints and descriptions", () => {
-      return request(app)
-        .get("/api")
-        .expect(200)
-        .then((response) => {
-          expect(response.body).toEqual({ endpoints });
-        });
-    });
+});
+
+describe("GET /api", () => {
+  test("200: returns all available endpoints and descriptions", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual({ endpoints });
+      });
   });
 });
 
-describe("/api/articles/:article_id", () => {
+describe("GET api/articles/:article_id", () => {
   test("200: responds with correct article", () => {
     return request(app)
       .get("/api/articles/1")
@@ -70,6 +72,39 @@ describe("/api/articles/:article_id", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Input not found");
+      });
+  });
+});
+
+describe("GET /api/articles", () => {
+  test("200: responds with array of all article objects", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.length).toBe(13);
+        expect(response.body).toBeSortedBy("created_at", { descending: true });
+        const article = response.body;
+        articles.forEach((article) => {
+          expect(article).hasOwnProperty("article_id", expect.any(Number));
+            expect(article).hasOwnProperty("title", expect.any(String));
+            expect(article).hasOwnProperty('topic', expect.any(String))
+            expect(article).hasOwnProperty('author', expect.any(String))
+            expect(article).hasOwnProperty('created_at', expect.any(String))
+            expect(article).hasOwnProperty('votes', expect.any(Number))
+            expect(article).hasOwnProperty('article_img_url', expect.any(String))
+            expect(article).hasOwnProperty('comment_count', expect.any(Number))
+        });
+      });
+  });
+});
+describe("ALL /notValidPath", () => {
+  test("404: responsds with custom error message when invalid path passed", () => {
+    return request(app)
+      .get("/api/articlezzz")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Path not found");
       });
   });
 });

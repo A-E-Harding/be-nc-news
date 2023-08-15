@@ -1,5 +1,5 @@
 const express = require("express");
-const { getTopics, getEndpoints, getArticles } = require("./controllers/controllers");
+const { getTopics, getEndpoints, getArticles, getAllArticles } = require("./controllers/controllers");
 
 const app = express();
 
@@ -9,7 +9,11 @@ app.get('/api', getEndpoints)
 
 app.get("/api/articles/:article_id", getArticles);
 
-module.exports = app;
+app.get("/api/articles", getAllArticles)
+
+app.use((_, response) => {
+  response.status(404).send({msg:"Path not found"})
+})
 
 app.use((err, request, response, next) => {
   if (err.code === "22P02") {
@@ -29,3 +33,4 @@ app.use((err, request, response, next) => {
 });
 
 
+module.exports = app;
