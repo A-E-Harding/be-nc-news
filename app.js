@@ -1,9 +1,11 @@
 const express = require("express");
-const { getTopics, getArticles } = require("./controllers/controllers");
+const { getTopics, getEndpoints, getArticles } = require("./controllers/controllers");
 
 const app = express();
 
 app.get("/api/topics", getTopics);
+
+app.get('/api', getEndpoints)
 
 app.get("/api/articles/:article_id", getArticles);
 
@@ -17,10 +19,13 @@ app.use((err, request, response, next) => {
 });
 
 app.use((err, request, response, next) => {
-    response.status(404).send({ msg: "Input not found" });
-    next(err)
-});
+  if (err.status && err.msg) {
+    response.status(err.status).send({msg:err.msg})
+  }
+})
   
 app.use((err, request, response, next) => {
   response.status(500).send({ msg: "err" });
 });
+
+
