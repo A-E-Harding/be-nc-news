@@ -13,7 +13,7 @@ afterAll(() => {
   return connection.end();
 });
 
-describe("/api/topics", () => {
+describe("GET /api/topics", () => {
   test("200: array of topic objects returned with slug and description properties", () => {
     return request(app)
       .get("/api/topics")
@@ -25,19 +25,20 @@ describe("/api/topics", () => {
         }
       });
   });
-  describe("/api", () => {
-    test("200: returns all available endpoints and descriptions", () => {
-      return request(app)
-        .get("/api")
-        .expect(200)
-        .then((response) => {
-          expect(response.body).toEqual({ endpoints });
-        });
-    });
+});
+
+describe("GET /api", () => {
+  test("200: returns all available endpoints and descriptions", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual({ endpoints });
+      });
   });
 });
 
-describe("/api/articles/:article_id", () => {
+describe("GET api/articles/:article_id", () => {
   test("200: responds with correct article", () => {
     return request(app)
       .get("/api/articles/1")
@@ -73,3 +74,34 @@ describe("/api/articles/:article_id", () => {
       });
   });
 });
+
+describe("GET /api/articles", () => {
+    test('200: responds with array of all article objects', () => {
+        return request(app).get("/api/articles")
+            .expect(200)
+            .then((response) => {
+                expect(response.body.length).toBe(13)
+                expect(Object.keys(response.body[0])).toEqual([
+                    "article_id",
+                    "title",
+                    "topic",
+                    "author",
+                    "created_at",
+                    "votes",
+                    "article_img_url",
+                    "comment_count"
+                ]);
+                
+        })
+    })
+})
+describe("ALL /notValidPath", () => {
+    test("404: responsds with custom error message when invalid path passed", () => {
+      return request(app)
+        .get("/api/articlezzz")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Path not found");
+        });
+    });
+  });
