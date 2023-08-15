@@ -122,4 +122,27 @@ describe("GET /api/articles/:article_id/comments", () => {
         });
       });
   })
+  test('200: article has no comments', () => {
+    return request(app)
+    .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({body}) => {
+        expect(body.msg).toBe('No comments on that article')
+    })
+
+  })
+  test('400: passed non number parameter', () => {
+    return request(app).get('/api/articles/notNumber/comments')
+      .expect(400)
+      .then(({ body }) => {
+      expect(body.msg).toBe("Not a valid input")
+    })
+  })
+  test('404: passed articleID that does not exist', () => {
+    return request(app).get('/api/articles/999/comments')
+      .expect(404)
+      .then(({body}) => {
+      expect(body.msg).toEqual('Article not found')
+    })
+  })
 });
