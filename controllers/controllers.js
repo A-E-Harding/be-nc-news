@@ -1,5 +1,5 @@
 const { request, response } = require("../app");
-const { readTopics } = require("../models/models");
+const { readTopics, readArticles } = require("../models/models");
 const fs = require("fs/promises");
 
 exports.getTopics = (request, response, next) => {
@@ -15,3 +15,12 @@ exports.getEndpoints = (request, response, next) => {
     }
   );
 };
+exports.getArticles = (request, response, next) => {
+    const { article_id } = request.params
+    readArticles(article_id).then((articleObj) => {
+        response.status(200).send(articleObj)
+    })
+        .catch((err) => {
+        next(err)
+    })
+}
