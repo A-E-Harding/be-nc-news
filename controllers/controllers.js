@@ -1,5 +1,7 @@
 const { request, response } = require("../app");
-const { readTopics, readArticles, readAllArticles, addComment } = require("../models/models");
+
+const { readTopics, readArticles, readAllArticles, readArticleComments, checkExists, addComment } = require("../models/models");
+
 const fs = require("fs/promises");
 
 exports.getTopics = (request, response, next) => {
@@ -29,6 +31,7 @@ exports.getAllArticles = (request, response, next) => {
     response.status(200).send(allArticles)
   })
 }
+
 exports.postComment = (request, response, next) => {
   const newComment = request.body
   const {article_id} = request.params
@@ -39,3 +42,16 @@ exports.postComment = (request, response, next) => {
     next(err)
 })
 }
+
+exports.getArticleComments = (request, response, next) => {
+  const { article_id } = request.params
+  const promises = [checkExists(article_id), readArticleComments(article_id)]
+  Promise.all(promises).then((resolvedPromises) => {
+    const articles = resolvedPromises[1]
+    response.status(200).send(articles)
+  })
+    .catch((err) => {
+    next(err)
+  })
+}
+

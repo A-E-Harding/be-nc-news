@@ -29,6 +29,7 @@ exports.readAllArticles = () => {
     });
 };
 
+
 exports.addComment = (newComment, article_id) => {
   const { username, body } = newComment;
   const queryString = format(`INSERT INTO comments (author, body, article_id) VALUES %L RETURNING *`, [[username, body, article_id]])
@@ -36,3 +37,22 @@ exports.addComment = (newComment, article_id) => {
     return rows[0];
   });
 };
+
+
+exports.readArticleComments = (article_id) => {
+  return db.query(`SELECT * FROM comments WHERE article_id=$1 ORDER BY comments.created_at DESC`, [article_id]).then(({ rows }) => {
+    if (!rows[0]) {
+return Promise.reject({status:200, msg:'No comments on that article'})
+    }
+    return rows
+  })
+}
+
+exports.checkExists = (article_id) => {
+  return db.query(`SELECT * from articles WHERE article_id=$1;`, [article_id]).then(({ rows }) => {
+    if (!rows.length) {
+      return Promise.reject({status:404, msg:'Article not found'})
+    }
+  })
+}
+
