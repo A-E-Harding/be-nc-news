@@ -30,19 +30,6 @@ exports.getAllArticles = (request, response, next) => {
   })
 }
 
-// exports.getArticleComments = (request, response, next) => {
-//   const { article_id } = request.params
-//   readArticleComments(article_id).then((commentArr) => {
-//     if (!commentArr.length) {
-//       return Promise.reject({status:404, msg:'404 Not Found'})
-//     }
-//     response.status(200).send(commentArr)
-//   })
-//   .catch((err) => {
-//     next(err)
-// })
-// }
-
 exports.getArticleComments = (request, response, next) => {
   const { article_id } = request.params
   const promises = [checkExists(article_id), readArticleComments(article_id)]
