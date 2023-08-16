@@ -21,7 +21,7 @@ app.use((_, response) => {
 
 app.use((err, request, response, next) => {
   if (err.code === "22P02") {
-    response.status(400).send({ msg: "Not a valid input" });
+    response.status(400).send({ msg: "Bad request" });
   }
   if (err.code === "23503") {
     response.status(404).send({ msg: "Not Found" });
