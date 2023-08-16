@@ -87,13 +87,13 @@ describe("GET /api/articles", () => {
         const article = response.body;
         articles.forEach((article) => {
           expect(article).hasOwnProperty("article_id", expect.any(Number));
-            expect(article).hasOwnProperty("title", expect.any(String));
-            expect(article).hasOwnProperty('topic', expect.any(String))
-            expect(article).hasOwnProperty('author', expect.any(String))
-            expect(article).hasOwnProperty('created_at', expect.any(String))
-            expect(article).hasOwnProperty('votes', expect.any(Number))
-            expect(article).hasOwnProperty('article_img_url', expect.any(String))
-            expect(article).hasOwnProperty('comment_count', expect.any(Number))
+          expect(article).hasOwnProperty("title", expect.any(String));
+          expect(article).hasOwnProperty("topic", expect.any(String));
+          expect(article).hasOwnProperty("author", expect.any(String));
+          expect(article).hasOwnProperty("created_at", expect.any(String));
+          expect(article).hasOwnProperty("votes", expect.any(Number));
+          expect(article).hasOwnProperty("article_img_url", expect.any(String));
+          expect(article).hasOwnProperty("comment_count", expect.any(Number));
         });
       });
   });
@@ -106,5 +106,48 @@ describe("ALL /notValidPath", () => {
       .then(({ body }) => {
         expect(body.msg).toBe("Path not found");
       });
+  });
+});
+
+describe("POST /api/articles/:article_id/comments", () => {
+  const body = {
+    username: "butter_bridge",
+    body: "A new comment",
+  };
+  test("200: adds comment to specified article", () => {
+    return request(app)
+      .post("/api/articles/6/comments")
+      .send(body)
+      .expect(201)
+      .then((response) => {
+        expect(response.body).hasOwnProperty("article_id", expect(6));
+        expect(response.body).hasOwnProperty("author", expect("butter_bridge"));
+        expect(response.body).hasOwnProperty("body", expect("A new comment"));
+        expect(response.body).hasOwnProperty("comment_id", expect.any(Number));
+        expect(response.body).hasOwnProperty("votes", expect.any(Number));
+        expect(response.body).hasOwnProperty("created_at", expect.any(String));
+      });
+  });
+  test("404: passed non-existant articleID", () => {
+    return request(app)
+    .post("/api/articles/9999/comments")
+    .send(body)
+    .expect(404)
+    .then((response) => {
+     expect(response.body.msg).toBe('Not Found')
+    });
+  });
+  test("400: passed incomplete body", () => {
+    return request(app)
+    .post("/api/articles/6/comments")
+      .send(
+        {
+          username: "butter_bridge"
+        }
+    )
+    .expect(400)
+    .then((response) => {
+     expect(response.body.msg).toBe('Bad request')
+    });
   });
 });

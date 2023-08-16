@@ -1,5 +1,5 @@
 const { request, response } = require("../app");
-const { readTopics, readArticles, readAllArticles } = require("../models/models");
+const { readTopics, readArticles, readAllArticles, addComment } = require("../models/models");
 const fs = require("fs/promises");
 
 exports.getTopics = (request, response, next) => {
@@ -28,4 +28,14 @@ exports.getAllArticles = (request, response, next) => {
   readAllArticles().then((allArticles) => {
     response.status(200).send(allArticles)
   })
+}
+exports.postComment = (request, response, next) => {
+  const newComment = request.body
+  const {article_id} = request.params
+  addComment(newComment, article_id).then((comment) => {
+    response.status(201).send(comment)
+  })
+    .catch((err) => {
+    next(err)
+})
 }
