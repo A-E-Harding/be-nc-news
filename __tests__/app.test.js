@@ -130,7 +130,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send({
         username: "butter_bridge",
         body: "A new comment",
-        extra:'an extra property'
+        extra: 'an extra property'
       })
       .expect(201)
       .then((response) => {
@@ -144,87 +144,88 @@ describe("POST /api/articles/:article_id/comments", () => {
   });
   test("404: passed non-existant articleID", () => {
     return request(app)
-    .post("/api/articles/9999/comments")
-    .send(body)
-    .expect(404)
-    .then((response) => {
-     expect(response.body.msg).toBe('Not Found')
-    });
+      .post("/api/articles/9999/comments")
+      .send(body)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('Not Found')
+      });
   });
   test("400: passed incomplete body", () => {
     return request(app)
-    .post("/api/articles/6/comments")
+      .post("/api/articles/6/comments")
       .send(
         {
           username: "butter_bridge"
         }
-    )
-    .expect(400)
-    .then((response) => {
-     expect(response.body.msg).toBe('Bad request')
-    });
+      )
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad request')
+      });
   });
   test("400: passed invalid ID", () => {
     return request(app)
-    .post("/api/articles/notANumber/comments")
-    .send(body)
+      .post("/api/articles/notANumber/comments")
+      .send(body)
       .expect(400).then((response) => {
         expect(response.body.msg).toBe('Bad request')
-    })
+      })
   })
   test('404: username does not exist', () => {
     return request(app)
       .post("/api/articles/6/comments")
-    .send({
-      username: "not_A_User",
-      body: "A new comment"
-    })
+      .send({
+        username: "not_A_User",
+        body: "A new comment"
+      })
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe('Not Found')
-    })
+      })
   })
     
-describe("GET /api/articles/:article_id/comments", () => {
-  test("200: returns array of comment objects for given article_id, in date order", () => {
-    return request(app)
-      .get("/api/articles/5/comments")
-      .expect(200)
-      .then((response) => {
-        const comments = response.body
-        expect(comments.length).toBe(2)
-        expect(comments).toBeSortedBy("created_at", { descending: true });
-        comments.forEach((comment) => {
-          expect(comments).hasOwnProperty("comment_id", expect.any(Number));
-          expect(comments).hasOwnProperty("votes", expect.any(Number));
-          expect(comments).hasOwnProperty("author", expect.any(String));
-          expect(comments).hasOwnProperty("created_at", expect.any(String));
-          expect(comments).hasOwnProperty("body", expect.any(String));
-          expect(comments).hasOwnProperty("article_id", expect.any(Number));
+  describe("GET /api/articles/:article_id/comments", () => {
+    test("200: returns array of comment objects for given article_id, in date order", () => {
+      return request(app)
+        .get("/api/articles/5/comments")
+        .expect(200)
+        .then((response) => {
+          const comments = response.body
+          expect(comments.length).toBe(2)
+          expect(comments).toBeSortedBy("created_at", { descending: true });
+          comments.forEach((comment) => {
+            expect(comments).hasOwnProperty("comment_id", expect.any(Number));
+            expect(comments).hasOwnProperty("votes", expect.any(Number));
+            expect(comments).hasOwnProperty("author", expect.any(String));
+            expect(comments).hasOwnProperty("created_at", expect.any(String));
+            expect(comments).hasOwnProperty("body", expect.any(String));
+            expect(comments).hasOwnProperty("article_id", expect.any(Number));
+          });
         });
-      });
-  })
-  test('200: article has no comments', () => {
-    return request(app)
-    .get("/api/articles/2/comments")
-      .expect(200)
-      .then(({body}) => {
-        expect(body.msg).toBe('No comments on that article')
     })
+    test('200: article has no comments', () => {
+      return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.msg).toBe('No comments on that article')
+        })
 
-  })
-  test('400: passed non number parameter', () => {
-    return request(app).get('/api/articles/notNumber/comments')
-      .expect(400)
-      .then(({ body }) => {
-      expect(body.msg).toBe("Not a valid input")
+    })
+    test('400: passed non number parameter', () => {
+      return request(app).get('/api/articles/notNumber/comments')
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad request")
+        })
+    })
+    test('404: passed articleID that does not exist', () => {
+      return request(app).get('/api/articles/999/comments')
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toEqual('Article not found')
+        })
     })
   })
-  test('404: passed articleID that does not exist', () => {
-    return request(app).get('/api/articles/999/comments')
-      .expect(404)
-      .then(({body}) => {
-      expect(body.msg).toEqual('Article not found')
-    })
-  })
-});
+})
