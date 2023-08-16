@@ -58,7 +58,7 @@ describe("GET api/articles/:article_id", () => {
       .get("/api/articles/notNumber")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Not a valid input");
+        expect(body.msg).toBe("Bad request");
       });
   });
   test("404: passed id that does not exist", () => {
@@ -103,6 +103,88 @@ describe("ALL /notValidPath", () => {
       });
   });
 });
+
+
+describe("POST /api/articles/:article_id/comments", () => {
+  const body = {
+    username: "butter_bridge",
+    body: "A new comment",
+  };
+  test("201: adds comment to specified article", () => {
+    return request(app)
+      .post("/api/articles/6/comments")
+      .send(body)
+      .expect(201)
+      .then((response) => {
+        expect(response.body).hasOwnProperty("article_id", expect(6));
+        expect(response.body).hasOwnProperty("author", expect("butter_bridge"));
+        expect(response.body).hasOwnProperty("body", expect("A new comment"));
+        expect(response.body).hasOwnProperty("comment_id", expect.any(Number));
+        expect(response.body).hasOwnProperty("votes", expect.any(Number));
+        expect(response.body).hasOwnProperty("created_at", expect.any(String));
+      });
+  });
+  test("201: ignores extra properties", () => {
+    return request(app)
+      .post("/api/articles/6/comments")
+      .send({
+        username: "butter_bridge",
+        body: "A new comment",
+        extra:'an extra property'
+      })
+      .expect(201)
+      .then((response) => {
+        expect(response.body).hasOwnProperty("article_id", expect(6));
+        expect(response.body).hasOwnProperty("author", expect("butter_bridge"));
+        expect(response.body).hasOwnProperty("body", expect("A new comment"));
+        expect(response.body).hasOwnProperty("comment_id", expect.any(Number));
+        expect(response.body).hasOwnProperty("votes", expect.any(Number));
+        expect(response.body).hasOwnProperty("created_at", expect.any(String));
+      });
+  });
+  test("404: passed non-existant articleID", () => {
+    return request(app)
+    .post("/api/articles/9999/comments")
+    .send(body)
+    .expect(404)
+    .then((response) => {
+     expect(response.body.msg).toBe('Not Found')
+    });
+  });
+  test("400: passed incomplete body", () => {
+    return request(app)
+    .post("/api/articles/6/comments")
+      .send(
+        {
+          username: "butter_bridge"
+        }
+    )
+    .expect(400)
+    .then((response) => {
+     expect(response.body.msg).toBe('Bad request')
+    });
+  });
+  test("400: passed invalid ID", () => {
+    return request(app)
+    .post("/api/articles/notANumber/comments")
+    .send(body)
+      .expect(400).then((response) => {
+        expect(response.body.msg).toBe('Bad request')
+    })
+  })
+  test('404: username does not exist', () => {
+    return request(app)
+      .post("/api/articles/6/comments")
+    .send({
+      username: "not_A_User",
+      body: "A new comment"
+    })
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('Not Found')
+    })
+  })
+    
 describe("GET /api/articles/:article_id/comments", () => {
   test("200: returns array of comment objects for given article_id, in date order", () => {
     return request(app)

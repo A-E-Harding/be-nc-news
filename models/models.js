@@ -19,13 +19,26 @@ exports.readArticles = (article_id) => {
     });
 };
 
-
 exports.readAllArticles = () => {
-  return db.query('SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id) AS comment_count FROM ARTICLES LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC').then(({ rows }) => {
-    return rows
-  })
+  return db
+    .query(
+      "SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id) AS comment_count FROM ARTICLES LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC"
+    )
+    .then(({ rows }) => {
+      return rows;
+    });
+};
 
-}
+
+exports.addComment = (newComment, article_id) => {
+  const { username, body } = newComment;
+  const queryString = format(`INSERT INTO comments (author, body, article_id) VALUES %L RETURNING *`, [[username, body, article_id]])
+  return db.query(queryString).then(({ rows }) => {
+    return rows[0];
+  });
+};
+
+
 exports.readArticleComments = (article_id) => {
   return db.query(`SELECT * FROM comments WHERE article_id=$1 ORDER BY comments.created_at DESC`, [article_id]).then(({ rows }) => {
     if (!rows[0]) {
@@ -42,3 +55,4 @@ exports.checkExists = (article_id) => {
     }
   })
 }
+
