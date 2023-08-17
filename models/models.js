@@ -67,6 +67,24 @@ exports.checkExists = (article_id) => {
     });
 };
 
+
+exports.deleteComment = (comment_id) => {
+  return db.query(`DELETE FROM comments WHERE comment_id=$1 RETURNING *`, [comment_id])
+    .then(({ rows }) => {
+      if (rows[0].comment_id = comment_id) {
+      return rows
+      }
+  })
+}
+
+exports.checkCommentExists = (comment_id) => {
+  return db.query(`SELECT * from comments WHERE comment_id=$1;`, [comment_id]).then(({ rows }) => {
+    if (!rows.length) {
+      return Promise.reject({status:404, msg:'Comment not found'})
+    }
+  })
+}
+
 exports.addVotes = (article_id, votes) => {
   const { inc_votes } = votes;
   return db
@@ -81,3 +99,4 @@ exports.addVotes = (article_id, votes) => {
       return rows;
     });
 };
+
