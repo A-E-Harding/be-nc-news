@@ -1,6 +1,6 @@
 const { request, response } = require("../app");
 
-const { readTopics, readArticles, readArticleComments, checkExists, addComment, deleteComment, checkCommentExists, addVotes, fetchAllUsers, readAllArticles } = require("../models/models");
+const { readTopics, readArticles, readArticleComments, checkExists, addComment, deleteComment, checkCommentExists, addVotes, fetchAllUsers, readAllArticles, checkTopicExists } = require("../models/models");
 
 
 
@@ -34,8 +34,13 @@ exports.getAllArticles = (request, response, next) => {
   const { topic } = request.query
   const { sort_by } = request.query
   const { order } = request.query
-  readAllArticles(topic, sort_by, order).then((articles) => {
-    response.status(200).send(articles);
+  const promises = [readAllArticles(topic, sort_by, order)]
+  if (topic) {
+    promises.push(checkTopicExists(topic))
+  }
+  Promise.all(promises).then((resolvedPromises) => {
+    const articles = resolvedPromises[0]
+    response.status(200).send(articles)
   })
     .catch((err) => {
     next(err)

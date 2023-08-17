@@ -386,12 +386,20 @@ describe("GET /api/articles?topic=:topic", () => {
       });
   })
   })
-  test('400: topic provided does not exist', () => {
+  test('404: topic provided does not exist', () => {
     return request(app)
       .get("/api/articles?topic=dogs")
-    .expect(400)
-    .then((response) => {
-      expect(response.body.msg).toBe('Bad request')
+    .expect(404)
+      .then((response) => {
+      expect(response.body.msg).toBe('Topic not found')
+  })
+  })
+  test('200: valid topic, no articles, return empty array', () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+    .expect(200)
+      .then((response) => {
+      expect(response.body).toEqual([])
   })
   })
 })

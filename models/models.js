@@ -46,11 +46,18 @@ exports.readAllArticles = (topic, sort_by = 'created_at', order = "desc") => {
   queryString = `${queryStringFirst} ${queryStringLast}`
   return db.query(queryString, queryValues)
     .then(({ rows }) => {
-      if (!rows.length) {
-        return Promise.reject({status:400, msg:'Bad request'})
-      }
-    return rows;
+      return rows;
   });
+};
+
+exports.checkTopicExists = (topic) => {
+  return db
+    .query(`SELECT * from topics WHERE slug=$1;`, [topic])
+    .then(({ rows }) => {
+      if (!rows.length) {
+        return Promise.reject({ status: 404, msg: "Topic not found" });
+      }
+    });
 };
 
 exports.addComment = (newComment, article_id) => {
