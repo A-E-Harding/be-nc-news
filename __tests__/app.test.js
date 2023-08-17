@@ -4,6 +4,7 @@ const testData = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
 const connection = require("../db/connection");
 const endpoints = require("../endpoints.json");
+const { response } = require("../app.js");
 
 beforeEach(() => seed(testData));
 
@@ -81,18 +82,19 @@ describe("GET /api/articles", () => {
         expect(response.body).toBeSortedBy("created_at", { descending: true });
         const articles = response.body;
         articles.forEach((article) => {
-          expect(article).hasOwnProperty("article_id", expect.any(Number));
-          expect(article).hasOwnProperty("title", expect.any(String));
-          expect(article).hasOwnProperty("topic", expect.any(String));
-          expect(article).hasOwnProperty("author", expect.any(String));
-          expect(article).hasOwnProperty("created_at", expect.any(String));
-          expect(article).hasOwnProperty("votes", expect.any(Number));
-          expect(article).hasOwnProperty("article_img_url", expect.any(String));
-          expect(article).hasOwnProperty("comment_count", expect.any(Number));
+          expect(article).toHaveProperty("article_id", expect.any(Number));
+          expect(article).toHaveProperty("title", expect.any(String));
+          expect(article).toHaveProperty("topic", expect.any(String));
+          expect(article).toHaveProperty("author", expect.any(String));
+          expect(article).toHaveProperty("created_at", expect.any(String));
+          expect(article).toHaveProperty("votes", expect.any(Number));
+          expect(article).toHaveProperty("article_img_url", expect.any(String));
+          expect(article).toHaveProperty("comment_count", expect.any(String));
         });
       });
   });
 });
+
 
 describe("ALL /notValidPath", () => {
   test("404: responsds with custom error message when invalid path passed", () => {
@@ -364,4 +366,126 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("GET /api/articles?topic=:topic", () => {
+  test("200: topic query provided, filters by topic and returns articles", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+    .expect(200)
+    .then((response) => {
+      let articles = response.body
+      expect(articles.length).toBe(1)
+      articles.forEach((article) => {
+        expect(article).toHaveProperty("article_id", expect.any(Number));
+        expect(article).toHaveProperty("title", expect.any(String));
+        expect(article).toHaveProperty("topic", expect.any(String));
+        expect(article).toHaveProperty("author", expect.any(String));
+        expect(article).toHaveProperty("created_at", expect.any(String));
+        expect(article).toHaveProperty("votes", expect.any(Number));
+        expect(article).toHaveProperty("article_img_url", expect.any(String));
+        expect(article).toHaveProperty("comment_count", expect.any(String));
+      });
+  })
+  })
+  test('400: topic provided does not exist', () => {
+    return request(app)
+      .get("/api/articles?topic=dogs")
+    .expect(400)
+    .then((response) => {
+      expect(response.body.msg).toBe('Bad request')
+  })
+  })
+})
+describe("GET /api/articles?sort_by=:property", () => {
+  test("200: sort_by query provided, sorts by property, returns articles", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes")
+    .expect(200)
+      .then((response) => {
+        let articles = response.body
+        expect(articles).toBeSortedBy('votes', { descending: true })
+        expect(articles.length).toBe(13)
+        articles.forEach((article) => {
+          expect(article).toHaveProperty("article_id", expect.any(Number));
+          expect(article).toHaveProperty("title", expect.any(String));
+          expect(article).toHaveProperty("topic", expect.any(String));
+          expect(article).toHaveProperty("author", expect.any(String));
+          expect(article).toHaveProperty("created_at", expect.any(String));
+          expect(article).toHaveProperty("votes", expect.any(Number));
+          expect(article).toHaveProperty("article_img_url", expect.any(String));
+          expect(article).toHaveProperty("comment_count", expect.any(String));
+        });
+      
+  })
+  })
+  test('200: if no sort_by query provided, defaults to created_at', () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then((response) =>{
+        let articles = response.body
+        expect(articles).toBeSortedBy('created_at', { descending: true })
+    })
+  })
+
+  test('400: property provided does not exist', () => {
+    return request(app)
+      .get("/api/articles?sort_by=dogs")
+    .expect(400)
+    .then((response) => {
+      expect(response.body.msg).toBe('Bad request')
+  })
+  })
+
+})
+
+describe("GET /api/articles?order=:order", () => {
+  test('200: sets order to asc or desc', () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+    .expect(200)
+      .then((response) => {
+        let articles = response.body
+        expect(articles).toBeSortedBy('created_at', { ascending: true })
+  })
+  })
+  test('200: sets order to asc or desc', () => {
+    return request(app)
+      .get("/api/articles?order=desc")
+    .expect(200)
+      .then((response) => {
+        let articles = response.body
+        expect(articles).toBeSortedBy('created_at', { descending: true })
+  })
+  })
+  test('400: property provided does not exist', () => {
+    return request(app)
+      .get("/api/articles?order=dogs")
+    .expect(400)
+    .then((response) => {
+      expect(response.body.msg).toBe('Bad request')
+  })
+  })
+  test('200: topic, sort_by and order queries can be used together', () => {
+    return request(app)
+      .get("/api/articles?topic=mitch&sort_by=votes&order=asc")
+    .expect(200)
+      .then((response) => {
+      const articles = response.body
+      expect(articles).toBeSortedBy('votes', { ascending: true })
+        expect(articles.length).toBe(12)
+        articles.forEach((article) => {
+          expect(article).toHaveProperty("article_id", expect.any(Number));
+          expect(article).toHaveProperty("title", expect.any(String));
+          expect(article).toHaveProperty("topic")
+          expect(article.topic).toBe('mitch');
+          expect(article).toHaveProperty("author", expect.any(String));
+          expect(article).toHaveProperty("created_at", expect.any(String));
+          expect(article).toHaveProperty("votes", expect.any(Number));
+          expect(article).toHaveProperty("article_img_url", expect.any(String));
+          expect(article).toHaveProperty("comment_count", expect.any(String));
+        })
+  })
+  })
+})
 

@@ -26,6 +26,12 @@ app.patch("/api/articles/:article_id", updateVotes);
 
 app.get('/api/users', getAllUsers)
 
+app.get("/api/articles?topic=:topic", getAllArticles)
+
+app.get("/api/articles?sort_by=:property", getAllArticles)
+
+app.get("/api/articles?order=:order", getAllArticles)
+
 app.use((_, response) => {
   response.status(404).send({ msg: "Path not found" });
 });
