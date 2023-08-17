@@ -85,6 +85,13 @@ exports.checkCommentExists = (comment_id) => {
   })
 }
 
+
+exports.fetchAllUsers = () => {
+  return db.query('SELECT * FROM users').then(({ rows }) => {
+    return rows
+  })
+}
+
 exports.addVotes = (article_id, votes) => {
   const { inc_votes } = votes;
   return db
@@ -99,4 +106,5 @@ exports.addVotes = (article_id, votes) => {
       return rows;
     });
 };
+
 

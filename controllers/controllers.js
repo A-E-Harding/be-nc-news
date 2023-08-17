@@ -1,7 +1,7 @@
 const { request, response } = require("../app");
 
+const { readTopics, readArticles, readAllArticles, readArticleComments, checkExists, addComment, deleteComment, checkCommentExists, addVotes, fetchAllUsers } = require("../models/models");
 
-const { readTopics, readArticles, readAllArticles, readArticleComments, checkExists, addComment, deleteComment, checkCommentExists, addVotes } = require("../models/models");
 
 
 const fs = require("fs/promises");
@@ -72,6 +72,13 @@ exports.removeComment = (request, response, next) => {
 })
 }
 
+
+exports.getAllUsers = (request, response, next) => {
+  fetchAllUsers().then((users) => {
+    response.status(200).send(users)
+  })
+}
+
 exports.updateVotes = (request, response, next) => {
   const votes = request.body;
   const { article_id } = request.params;
@@ -83,4 +90,5 @@ exports.updateVotes = (request, response, next) => {
       next(err);
     });
 };
+
 

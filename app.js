@@ -1,6 +1,8 @@
 const express = require("express");
 
-const { getTopics, getEndpoints, getArticles, getAllArticles, getArticleComments, postComment, removeComment, updateVotes } = require("./controllers/controllers");
+
+const { getTopics, getEndpoints, getArticles, getAllArticles, getArticleComments, postComment, removeComment, updateVotes, getAllUsers } = require("./controllers/controllers");
+
 
 const app = express();
 
@@ -22,6 +24,7 @@ app.delete('/api/comments/:comment_id', removeComment)
 
 app.patch("/api/articles/:article_id", updateVotes);
 
+app.get('/api/users', getAllUsers)
 
 app.use((_, response) => {
   response.status(404).send({ msg: "Path not found" });
