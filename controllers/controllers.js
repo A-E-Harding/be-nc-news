@@ -1,6 +1,6 @@
 const { request, response } = require("../app");
 
-const { readTopics, readArticles, readAllArticles, readArticleComments, checkExists, addComment } = require("../models/models");
+const { readTopics, readArticles, readAllArticles, readArticleComments, checkExists, addComment, deleteComment, checkCommentExists } = require("../models/models");
 
 const fs = require("fs/promises");
 
@@ -55,3 +55,13 @@ exports.getArticleComments = (request, response, next) => {
   })
 }
 
+exports.removeComment = (request, response, next) => {
+  const { comment_id } = request.params
+  const promises = [checkCommentExists(comment_id), deleteComment(comment_id)]
+  Promise.all(promises).then((resolvedPromises) => {
+    response.status(204).send()
+  })
+    .catch((err) => {
+    next(err)
+})
+}

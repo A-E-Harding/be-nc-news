@@ -229,3 +229,24 @@ describe("POST /api/articles/:article_id/comments", () => {
     })
   })
 })
+
+describe('/api/comments/:comment_id', () => {
+  test('204: resource deleted successfully, delete by comment_id', () => {
+    return request(app).delete('/api/comments/1')
+    .expect(204)
+  })
+  test('400: comment_id not valid', () => {
+    return request(app).delete('/api/comments/notNumber')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Bad request')
+      })
+  })
+  test('404: comment_id not found', () => {
+    return request(app).delete('/api/comments/10000')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Comment not found')
+      })
+  })
+})
