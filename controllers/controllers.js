@@ -1,6 +1,6 @@
 const { request, response } = require("../app");
 
-const { readTopics, readArticles, readAllArticles, readArticleComments, checkExists, addComment } = require("../models/models");
+const { readTopics, readArticles, readAllArticles, readArticleComments, checkExists, addComment, fetchAllUsers} = require("../models/models");
 
 const fs = require("fs/promises");
 
@@ -55,3 +55,8 @@ exports.getArticleComments = (request, response, next) => {
   })
 }
 
+exports.getAllUsers = (request, response, next) => {
+  fetchAllUsers().then((users) => {
+    response.status(200).send(users)
+  })
+}

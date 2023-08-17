@@ -93,6 +93,7 @@ describe("GET /api/articles", () => {
       });
   });
 });
+
 describe("ALL /notValidPath", () => {
   test("404: responsds with custom error message when invalid path passed", () => {
     return request(app)
@@ -103,7 +104,6 @@ describe("ALL /notValidPath", () => {
       });
   });
 });
-
 
 describe("POST /api/articles/:article_id/comments", () => {
   const body = {
@@ -228,4 +228,27 @@ describe("POST /api/articles/:article_id/comments", () => {
         })
     })
   })
+})
+
+describe("GET /api/users", () => {
+  test("200: returns all users ", () => {
+    return request(app).get('/api/users')
+      .expect(200)
+      .then((response) => {
+        let users = response.body
+        users.forEach((user) => {
+          expect(user).hasOwnProperty("username", expect.any(String));
+          expect(user).hasOwnProperty("name", expect.any(String));
+          expect(user).hasOwnProperty("avatar_url", expect.any(String));
+        });
+    })
+  })
+  test("404: responsds with custom error message when invalid path passed", () => {
+    return request(app)
+      .get("/api/userz")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Path not found");
+      });
+  });
 })
