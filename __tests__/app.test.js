@@ -40,6 +40,7 @@ describe("GET api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then((response) => {
+        console.log(response.body)
         expect(response.body).toHaveProperty("article_id", 1);
         expect(Object.keys(response.body)).toEqual([
           "article_id",
@@ -365,6 +366,7 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+
 
 describe("GET /api/articles?topic=:topic", () => {
   test("200: topic query provided, filters by topic and returns articles", () => {
