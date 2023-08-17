@@ -4,7 +4,6 @@ const testData = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
 const connection = require("../db/connection");
 const endpoints = require("../endpoints.json");
-const { response } = require("../app.js");
 
 beforeEach(() => seed(testData));
 
@@ -446,7 +445,7 @@ describe("GET /api/articles?order=:order", () => {
     .expect(200)
       .then((response) => {
         let articles = response.body
-        expect(articles).toBeSortedBy('created_at', { ascending: true })
+        expect(articles).toBeSortedBy('created_at', { descending: false })
   })
   })
   test('200: sets order to asc or desc', () => {

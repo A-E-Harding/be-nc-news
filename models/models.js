@@ -19,15 +19,11 @@ exports.readArticles = (article_id) => {
     });
 };
 
-exports.readAllArticles = (topic, sort_by = 'created_at', order="desc") => {
-  const acceptedTopics = ["mitch", "cats", "paper", undefined];
+exports.readAllArticles = (topic, sort_by = 'created_at', order = "desc") => {
   const queryValues = [];
   const acceptedProperties = ['title', 'topic', 'author', 'body', 'created_at', 'votes'];
   const acceptedOrders = ['asc', 'desc']
 
-  if (!acceptedTopics.includes(topic)) {
-    return Promise.reject({ status: 400, msg: "Bad request" });
-  }
   if (!acceptedProperties.includes(sort_by)) {
     return Promise.reject({ status: 400, msg: "Bad request" });
   }
@@ -48,9 +44,11 @@ exports.readAllArticles = (topic, sort_by = 'created_at', order="desc") => {
   }
  
   queryString = `${queryStringFirst} ${queryStringLast}`
-
   return db.query(queryString, queryValues)
     .then(({ rows }) => {
+      if (!rows.length) {
+        return Promise.reject({status:400, msg:'Bad request'})
+      }
     return rows;
   });
 };
