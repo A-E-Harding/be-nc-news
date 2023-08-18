@@ -9,7 +9,7 @@ exports.readTopics = () => {
 
 exports.readArticles = (article_id) => {
   return db
-    .query(`SELECT * FROM articles WHERE article_id=$1;`, [article_id])
+    .query(`SELECT articles.*, COUNT(comments.comment_id) AS comment_count FROM ARTICLES LEFT JOIN comments ON comments.article_id = articles.article_id WHERE articles.article_id=$1 GROUP BY articles.article_id ORDER BY articles.created_at DESC`, [article_id])
     .then(({ rows }) => {
       const article = rows[0];
       if (!article) {

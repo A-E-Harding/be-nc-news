@@ -40,8 +40,8 @@ describe("GET api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then((response) => {
-        console.log(response.body)
         expect(response.body).toHaveProperty("article_id", 1);
+        expect(response.body).toHaveProperty("comment_count", "11")
         expect(Object.keys(response.body)).toEqual([
           "article_id",
           "title",
@@ -51,6 +51,7 @@ describe("GET api/articles/:article_id", () => {
           "created_at",
           "votes",
           "article_img_url",
+          "comment_count"
         ]);
       });
   });
