@@ -134,12 +134,16 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send(body)
       .expect(201)
       .then((response) => {
-        expect(response.body).hasOwnProperty("article_id", expect(6));
-        expect(response.body).hasOwnProperty("author", expect("butter_bridge"));
-        expect(response.body).hasOwnProperty("body", expect("A new comment"));
-        expect(response.body).hasOwnProperty("comment_id", expect.any(Number));
-        expect(response.body).hasOwnProperty("votes", expect.any(Number));
-        expect(response.body).hasOwnProperty("created_at", expect.any(String));
+        console.log(response.body)
+        expect(response.body).toHaveProperty("article_id");
+        expect(response.body.article_id).toEqual(6)
+        expect(response.body).toHaveProperty("author");
+        expect(response.body.author).toEqual("butter_bridge")
+        expect(response.body).toHaveProperty("body");
+        expect(response.body.body).toEqual("A new comment")
+        expect(response.body).toHaveProperty("comment_id", expect.any(Number));
+        expect(response.body).toHaveProperty("votes", expect.any(Number));
+        expect(response.body).toHaveProperty("created_at", expect.any(String));
       });
   });
   test("201: ignores extra properties", () => {
@@ -152,12 +156,15 @@ describe("POST /api/articles/:article_id/comments", () => {
       })
       .expect(201)
       .then((response) => {
-        expect(response.body).hasOwnProperty("article_id", expect(6));
-        expect(response.body).hasOwnProperty("author", expect("butter_bridge"));
-        expect(response.body).hasOwnProperty("body", expect("A new comment"));
-        expect(response.body).hasOwnProperty("comment_id", expect.any(Number));
-        expect(response.body).hasOwnProperty("votes", expect.any(Number));
-        expect(response.body).hasOwnProperty("created_at", expect.any(String));
+        expect(response.body).toHaveProperty("article_id");
+        expect(response.body.article_id).toEqual(6)
+        expect(response.body).toHaveProperty("author");
+        expect(response.body.author).toEqual("butter_bridge")
+        expect(response.body).toHaveProperty("body");
+        expect(response.body.body).toEqual("A new comment")
+        expect(response.body).toHaveProperty("comment_id", expect.any(Number));
+        expect(response.body).toHaveProperty("votes", expect.any(Number));
+        expect(response.body).toHaveProperty("created_at", expect.any(String));
       });
   });
   test("404: passed non-existant articleID", () => {
@@ -256,9 +263,9 @@ describe("GET /api/users", () => {
       .then((response) => {
         let users = response.body
         users.forEach((user) => {
-          expect(user).hasOwnProperty("username", expect.any(String));
-          expect(user).hasOwnProperty("name", expect.any(String));
-          expect(user).hasOwnProperty("avatar_url", expect.any(String));
+          expect(user).toHaveProperty("username", expect.any(String));
+          expect(user).toHaveProperty("name", expect.any(String));
+          expect(user).toHaveProperty("avatar_url", expect.any(String));
         });
     })
   })
@@ -338,14 +345,14 @@ describe("PATCH /api/articles/:article_id", () => {
       .expect(200)
       .then((response) => {
         const article = response.body[0];
-        expect(article).hasOwnProperty("article_i", expect.any(Number));
-        expect(article).hasOwnProperty("title", expect.any(String));
-        expect(article).hasOwnProperty("topic", expect.any(String));
-        expect(article).hasOwnProperty("author", expect.any(String));
-        expect(article).hasOwnProperty("created_at", expect.any(String));
-        expect(article).hasOwnProperty("votes");
+        expect(article).toHaveProperty("article_id", expect.any(Number));
+        expect(article).toHaveProperty("title", expect.any(String));
+        expect(article).toHaveProperty("topic", expect.any(String));
+        expect(article).toHaveProperty("author", expect.any(String));
+        expect(article).toHaveProperty("created_at", expect.any(String));
+        expect(article).toHaveProperty("votes");
         expect(article.votes).toBe(101);
-        expect(article).hasOwnProperty("article_img_url", expect.any(String));
+        expect(article).toHaveProperty("article_img_url", expect.any(String));
       });
   });
   test("400: passed invalid article_id", () => {
