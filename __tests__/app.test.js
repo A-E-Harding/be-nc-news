@@ -134,7 +134,6 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send(body)
       .expect(201)
       .then((response) => {
-        console.log(response.body)
         expect(response.body).toHaveProperty("article_id");
         expect(response.body.article_id).toEqual(6)
         expect(response.body).toHaveProperty("author");
@@ -279,7 +278,7 @@ describe("GET /api/users", () => {
   });
 })
 
-describe('/api/comments/:comment_id', () => {
+describe('DELETE /api/comments/:comment_id', () => {
   test('204: resource deleted successfully, delete by comment_id', () => {
     return request(app).delete('/api/comments/1')
     .expect(204)
