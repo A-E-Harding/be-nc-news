@@ -21,7 +21,7 @@ exports.readArticles = (article_id) => {
 
 exports.readAllArticles = (topic, sort_by = 'created_at', order = "desc") => {
   const queryValues = [];
-  const acceptedProperties = ['title', 'topic', 'author', 'body', 'created_at', 'votes'];
+  const acceptedProperties = ['title', 'topic', 'author', 'body', 'created_at', 'votes', 'comment_count'];
   const acceptedOrders = ['asc', 'desc']
 
   if (!acceptedProperties.includes(sort_by)) {
