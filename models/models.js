@@ -34,9 +34,14 @@ exports.readAllArticles = (topic, sort_by = 'created_at', order = "desc") => {
   let queryStringFirst =
     "SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id) AS comment_count FROM ARTICLES LEFT JOIN comments ON comments.article_id = articles.article_id";
 
-  const queryStringLast =
-    `GROUP BY articles.article_id ORDER BY articles.${sort_by} ${order}`;
+  let queryStringLast;
 
+  if (sort_by === 'comment_count') {
+    queryStringLast = `GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`;
+  }
+  else {
+    queryStringLast = `GROUP BY articles.article_id ORDER BY articles.${sort_by} ${order}`
+  }
   if (topic!==undefined) {
     queryStringFirst += ` WHERE topic=$1`;
     queryString = `${queryStringFirst} ${queryStringLast}`
