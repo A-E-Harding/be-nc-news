@@ -14,7 +14,11 @@ Minimum versions:<br>
 Node.js v20.3.0<br>
 Postgres 15.3
 
-This repo can be cloned from github by copying the repo link into your terminal.
+This repo can be cloned from GitHub by copying the repo link into your terminal.
+
+```console
+git clone <insert link>
+```
 
 The dependences required by this repo can be installed using the following command line prompt. A full list of all dependencies can be viewed in the **package.json** file
 
