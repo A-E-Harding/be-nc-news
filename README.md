@@ -1,12 +1,15 @@
 # Northcoders News API
 ## Project Summary
-#
-This API allows access to data from Northcoders News, including data about posted articles, comments and users.
 
-For information on all available endpoints and associated queries, please visit the below link.
+Welcome to my Northcoders backend project! During this project I used Express and Node.js to create an API allowing access to data from Northcoders News, including data about posted articles, comments and users.
+
+The below project link shows information on all available endpoints and associated queries created as part of this project.
+
+### Project Link
+[nc-news](https://nc-news-0876.onrender.com/api)
 
 ## Set-up instructions
-#
+
 Minimum versions:<br>
 Node.js v20.3.0<br>
 Postgres 15.3
@@ -39,6 +42,5 @@ npm run test
 ```
 <br />
 
-### Project Link
-[nc-news](https://nc-news-0876.onrender.com/api)
+
 
