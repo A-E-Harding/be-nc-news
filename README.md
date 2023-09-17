@@ -6,7 +6,11 @@ Welcome to my Northcoders backend project! During this project I used Express an
 The below project link shows information on all available endpoints and associated queries created as part of this project.
 
 ### Project Link
-[nc-news](https://nc-news-0876.onrender.com/api)
+[be-nc-news](https://nc-news-0876.onrender.com/api)
+
+This project forms the backend of my Northcoders frontend project, please see the [fe-nc-news GitHub repo](https://github.com/A-E-Harding/fe-nc-news.git), or visit the below link to view the project.
+
+[fe-nc-news](https://nc-news-alice-harding.netlify.app)
 
 ## Set-up instructions
 
